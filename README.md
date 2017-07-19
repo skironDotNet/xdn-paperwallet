@@ -4,7 +4,7 @@
 
 
 
-Paper Wallet consists of two parts: <u>Private Key</u> and <u>Payment Address</u>
+Paper Wallet consists of two parts: ***Private Key*** and ***Payment Address***
 
 
 
