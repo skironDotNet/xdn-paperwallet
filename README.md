@@ -1,29 +1,33 @@
- ## DigitalNote Paper Wallet generator
+## DigitalNote Paper Wallet generator
 
-<p>
-<b>Paper Wallet Generator</b> is a tool that helps getting a DigitalNote(XDN) address. After generating a wallet you can start receiving payments without installing any software. 
-</p>
-<p>
+**Paper Wallet Generator** is a tool that helps getting a DigitalNote(XDN) address. After generating a wallet you can start receiving payments without installing any software. 
+
+
+
 Paper Wallet consists of two parts: <u>Private Key</u> and <u>Payment Address</u>
-</p>
-<p>
-<u>Payment Address</u> is your public account number. Share it with anyone to receive payments.
-</p>
-<p>
-<u>Private Key</u> is what gives you administrative access to your money. Keep it somewhere safe. <br>
-You can access your wallet by importing private key into the DigitalNote desktop application. ** Don't forget to backup current wallet before importing.  
-</p>
-<br>
-<h4>HOW TO USE</h4>
-<ol>
-<li>Press 'GENERATE WALLET' button.</li>
-<li>Copy 'Private Key' and save it somewhere safe.</li>
-<li>Save save paper wallet image to your disk</li>
-<li>Print the paper wallet on actual paper</li>
-<li>Cut the half with the private key</li>
-<li>Make as many copies of the public address as you need</li>
-<li>Share your public address when you want to receive payments/messages</li>
-</ol>
+
+
+
+**Payment Address** is your public account number. Share it with anyone to receive payments.
+
+
+**Private Key** is what gives you administrative access to your money. Keep it somewhere safe.
+
+
+You can access your wallet by importing private key into the DigitalNote desktop application. 
+
+
+** Don't forget to backup current wallet before importing.  
+
+### HOW TO USE
+1. Press 'GENERATE WALLET' button.
+2. Copy 'Private Key' and save it somewhere safe.
+3. Save save paper wallet image to your disk.
+4. Print the paper wallet on actual paper
+5. Cut the half with the private key
+6. Make as many copies of the public address as you need
+7. Share your public address when you want to receive payments/messages
+
 
 
 ### LICENSE
