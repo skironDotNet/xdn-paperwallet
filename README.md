@@ -33,8 +33,14 @@ You can access your wallet by importing private key into the DigitalNote desktop
 ### LICENSE
 
 Copyright (c) 2017, Anton Alex Nesterov
+
+
 Copyright (c) 2014-2015, MyMonero.com
+
+
 Copyright (c) 2014, Lucas Jones
+
+
 
 Redistribution and use in source and binary forms, with or without modification, are
 permitted provided that the following conditions are met:
