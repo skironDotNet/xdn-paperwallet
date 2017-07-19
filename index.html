@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>XDN Paper Wallet Generator</title>
+	<script type="text/javascript" src="./numbers.js"></script>
+	<script type="text/javascript" src="./asm.js"></script>
+	<script type="text/javascript" src="./cnUtil.js"></script>
+	<script type="text/javascript" src="./qrcode.js"></script>
+	<script type="text/javascript" src="./html2canvas.js"></script>
+	<link href="./styles/bootstrap.min.css" rel="stylesheet">
+	<link href="./styles/bootstrap-theme.min.css" rel="stylesheet">
+
+</head>
+<body>
+<style id="style" type="text/css">
+	body{
+		background: url('backgrounds/hero.png');
+		background-size: 100% auto;
+	}
+	.text-wallet{
+		width:842px !important;
+		display: inline-block;
+	}
+	.wallet{
+		border:1px solid #aaa;
+		width:842px !important;
+		height:595px !important;
+		display: inline-block;
+		background: url('backgrounds/graph.jpg');
+		background-size: 100% 100%;
+		margin-top: 25px;
+	}
+	.wallet .left{
+		border-right: 1px dashed #bbb; 
+		height:595px !important;
+	}
+	.wallet .right{
+		border-left: 1px dashed #ccc;
+		height:595px !important; 
+	}
+	.wallet .qrcode{
+		width: 250px !important;
+		height: 250px !important;
+		display: inline-block;
+		padding: 0px;
+	}
+	.wallet h4{
+		margin-top: 50px;
+		font-family: courier !important;
+		z-index: 100;
+	}
+	.wallet .base64{
+		word-break: break-all !important;
+		word-wrap: break-word !important;
+		margin:26px;
+		height: 105px;
+	}
+	.wallet .note .name{
+		margin-top: 12px;
+		color: #444;
+		font-weight: bold;
+		font-family: courier;
+	}
+	.wallet .note .desc{
+		margin-top: 12px;
+		color: #444;
+		font-family: courier;
+		padding:6px;
+	}
+	.wallet .qrcode img{
+		border: 1px solid #ccc;
+		display: inline;
+		margin-top: 20px;
+	}
+	.theform{
+		width: 50%;
+		min-width: 400px;
+		display: inline-block;
+	}
+	.theform small{
+		font-weight: bold;
+		font-family: courier !important;
+	}
+	#generate, .button{
+		width: 200px;
+	}
+
+	.navbar-inverse{
+		border-radius: 0px;
+		padding:6px;
+		color:#eee;
+	}
+</style>
+
+<div class="navbar navbar-inverse text-center">
+	<h1 class="text-center">
+		..:: <img width="50" src="backgrounds/xdn.jpg"> ::..
+	</h1>
+	<small>
+		DIGITALNOTE PAPER WALLET GENERATOR
+	</small>
+</div>
+
+<center>
+
+<div class="theform" id="_form">
+	<h3>WALLET DESCRIPTION<br>
+		<small>
+			(optional)
+		</small>
+	</h3>
+	<input class="form-control input-lg" type="text" id="wallet-name" placeholder="organization / your name">
+	<small>Examples: "John Smith", "Funny Bears ltd.",  "Sith Church"</small>
+	<hr>
+	<input class="form-control input-lg" type="text" id="wallet-desc" placeholder="wallet purpose">
+	<small>Examples: "Donate to the Sith Church.", "My DigitalNote account for savings"</small>
+	<hr>
+	<button id="generate" class="btn btn-lg btn-warning">
+		GENERATE WALLET
+	</button>
+	<br>
+	<br>
+</div>
+
+</center>
+
+
+<center id="_wallet">
+
+	<div class="text-wallet">
+		<div class="col-xs-6">
+			<h5>PRIVATE KEY</h5>
+			<textarea class="form-control" id='private_key'></textarea>
+		</div>
+		<div class="col-xs-6">
+			<h5>PAYMENT ADDRESS</h5>
+			<textarea class="form-control" id='public_address'></textarea>
+		</div>
+		<div class="col-xs-12">
+			<br>
+			<button class="btn btn-danger button" id="save_image">
+				SAVE AS IMAGE
+			</button>
+			<button class="btn btn-success button" id="print_image">
+				PRINT
+			</button>
+
+			<button class="btn btn-primary button" id="new_wallet">
+				GENERATE NEW WALLET
+			</button>
+			<br>
+		</div>
+	</div>
+
+	<div class="wallet" id="wallet">
+		<div class="col-xs-6 left">
+			<h4>PRIVATE KEY</h4>
+			<div class="qrcode" id="private-key-qr">
+				
+			</div>
+			<div class="base64" id="private-key">
+				dddZXiAthSgcc3sjTfkVB7N1jSgYv3dpVJF4Sx<br>
+				M1HNRRjo4AUDgheHYHMMGLnfLuQW7nGLtSrup<br>
+				SVXk7KUEgxPrQVJd3T87kvV6PrzieSP9CPkDy<br>
+				cKnzdGj99Wv8K1r8Wi5XTGEHn7Z5FsT24y8pq<br>
+				hiksjitbHnJ93JkibgxnkX2qr9x19xyA7LbK
+			</div>
+			<div class="note">
+				<p class="name">
+					WARNING!
+				</p>
+				<p class="desc">
+					Never show this piece to anyone! Never expose this QR code in public places!
+				</p>
+			</div>
+		</div>
+		<div class="col-xs-6 right">
+			<h4>PAYMENT ADDRESS</h4>
+			<div class="qrcode" id="public-address-qr">
+				
+			</div>
+			<div class="base64" style="height: 55px;" id="public-address">
+				dddZXiAthSgcc3sjTfkVB7N1jSgYv3dpVJF4SxM1HNRRjo4AUDgheHYHMMGLnfLuQW7nGLtSrupSVXk7KUEgxPrQ2TGQUwLuD
+			</div>
+			<div class="note">
+				<p class="name" id="orgname">
+					DigitalNote Wallet
+				</p>
+				<p class="desc" id="purpose">
+					DigitalNote address for payments and messages.
+				</p>
+			</div>
+		</div>
+	</div>
+
+</center>
+
+<div class="well row" style="font-family: courier;">
+	<div class="col-sm-6 col-sm-offset-3">
+		<h4>ABOUT THE PAPER WALLET</h4>
+		<p>
+			<b>Paper Wallet Generator</b> is a tool that helps getting a DigitalNote(XDN) address. After generating a wallet you can start receiving payments without installing any software. 
+		</p>
+		<p>
+			Paper Wallet consists of two parts: <u>Private Key</u> and <u>Payment Address</u>
+		</p>
+		<p>
+			<u>Payment Address</u> is your public account number. Share it with anyone to receive payments.
+		</p>
+		<p>
+			<u>Private Key</u> is what gives you administrative access to your money. Keep it somewhere safe. <br>
+			You can access your wallet by importing private key into the DigitalNote desktop application. ** Don't forget to backup current wallet before importing.  
+		</p>
+		<br>
+		<h4>HOW TO USE</h4>
+		<ol>
+			<li>Press 'GENERATE WALLET' button.</li>
+			<li>Copy 'Private Key' and save it somewhere safe.</li>
+			<li>Save save paper wallet image to your disk</li>
+			<li>Print the paper wallet on actual paper</li>
+			<li>Cut the half with the private key</li>
+			<li>Make as many copies of the public address as you need</li>
+			<li>Share your public address when you want to receive payments/messages</li>
+		</ol>
+	</div>
+</div>
+
+<div id="result"></div>
+
+</body>
+<script type="text/javascript">
+
+function el(id){return document.getElementById(id);}
+var _form = el('_form'),
+	_wallet = el('_wallet');
+
+_wallet.style.display = 'none';
+
+
+function break38(line){
+	//break line fix for html2canvas
+	var result = "";
+	for(var i=0; i<line.length; i++){
+		if(i!=0&&i%35==0){result += line[i]+"<br>";}
+		else{result += line[i];}
+	}
+	return result;
+};
+
+function generateWallet() {
+	var Config = {
+	    coinUnitPlaces: 12,
+	    coinSymbol: 'XDN',
+	    coinName: 'DigitalNote',
+	    coinUriPrefix: 'dnote:',
+	    addressPrefix: 0xDB
+	};
+	var cnUtil = cnUtilGen(Config);
+
+	var seed = cnUtil.sc_reduce32(cnUtil.rand_32());
+	var keys = cnUtil.create_address(seed);
+	var pub, priv;
+	pub = el('public_address').value = cnUtil.pubkeys_to_string(keys.spend.pub, keys.view.pub);
+	el('public-address').innerHTML = break38(pub);
+	var pub_qr = qrcode(12, 'L'); 
+	pub_qr.addData('dnote:'+pub);
+	pub_qr.make();
+	el('public-address-qr').innerHTML = pub_qr.createImgTag(3);
+
+	priv = el('private_key').value = cnUtil.encode_key(keys.spend.pub, keys.view.pub, keys.spend.sec, keys.view.sec);
+	el('private-key').innerHTML = break38(priv);
+	var priv_qr = qrcode(12, 'L'); 
+	priv_qr.addData(priv);
+	priv_qr.make();
+	el('private-key-qr').innerHTML = priv_qr.createImgTag(3);
+
+}
+
+
+
+function generate(){
+	el('orgname').innerHTML = el('wallet-name').value || el('orgname').innerHTML;
+	el('purpose').innerHTML = el('wallet-desc').value || el('purpose').innerHTML;
+	generateWallet();
+	_form.style.display = 'none';
+	_wallet.style.display = 'block';
+}
+
+function render(callback){
+    html2canvas(el('wallet'), {
+      onrendered: function(canvas) {
+      	window.result_canvas = canvas;
+      	if(callback) callback(canvas);
+      }
+    });
+}
+
+
+el('generate').onclick = generate;
+
+el('save_image').onclick = function(){
+	render(function(canvas){
+		var dataURL = canvas.toDataURL( "image/png" ).replace("image/png", "image/octet-stream");
+		window.location.href=dataURL;
+	});
+}
+
+el('print_image').onclick = function(){
+	render(function(canvas){
+		var dataURL = canvas.toDataURL( "image/png" );
+		window.open(dataURL, '_blank');
+	});
+}
+
+el('new_wallet').onclick = function(){
+	_form.style.display = 'block';
+	_wallet.style.display = 'none';
+}
+
+</script>
+</html>
