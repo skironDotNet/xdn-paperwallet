@@ -264,6 +264,14 @@
 			You can access your wallet by importing private key into the DigitalNote desktop application. ** Don't forget to backup current wallet before importing.  
 		</p>
 		<br>
+		<h4>ABOUT THE BRAIN WALLET</h4>
+		<p>
+			By using passphrase you can recover your wallet in the future by using same passphrase, so no need to print qrcode. 
+		</p>
+		<p class="error">
+			Warning: You should save the source to this page to make sure you can restore your wallet in the future. Chances are implementation of passphrase hashing algorithm may change overtime. 
+		</p>
+		<br>
 		<h4>HOW TO USE</h4>
 		<ol>
 			<li>Press 'GENERATE WALLET' button.</li>
@@ -295,6 +303,7 @@ var _form = el('_form'),
 
 _wallet.style.display = 'none';
 _pharses.style.display = 'none';
+_cbBrain.checked = 0;
 
 function break38(line){
 	//break line fix for html2canvas
