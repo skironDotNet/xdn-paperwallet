@@ -23,7 +23,6 @@
 	}
 	.wallet{
 		border:1px solid #aaa;
-		width:842px !important;
 		height:595px !important;
 		display: inline-block;
 		background: url('backgrounds/graph.jpg');
@@ -95,7 +94,7 @@
 	.move-left {
     	width: auto;
     	box-shadow: none;
-  	}
+  	} 
 
 	.cb-fix {
 		width: 20px;
@@ -106,6 +105,17 @@
 		font-weight: bold;
 	}
 
+	.wallet-full{
+		width:842px !important;
+	}
+
+	.wallet-public{
+		width: 421px !important;
+	}
+	
+	#new_wallet {
+		margin-top: 5px;
+	}
 </style>
 
 <a href="https://xdnfinance.com" style="position: fixed; top:10px; left: 10px; z-index: 100;" class="btn btn-default">
@@ -142,7 +152,7 @@
 
 	<div class="row">
 		<div class="col-sm-12 move-left">
-			<input class="form-control checkbox-inline checkbox-info cb-fix" type="checkbox" id="cbBrain" />
+			<input class="form-control checkbox-inline cb-fix" type="checkbox" id="cbBrain" />
 			<small>Create brain wallet</small>
 		</div>
 	</div>
@@ -176,13 +186,16 @@
 		</div>
 		<div class="col-xs-12">
 			<br>
+			<div class="col-xs-12" id="togglePrivate">
+				<input class="form-control checkbox-inline cb-fix" type="checkbox" id="cbShowPrivateQR" />
+				<small>Show private QR code</small>
+			</div>
 			<button class="btn btn-danger button" id="save_image">
 				SAVE AS IMAGE
 			</button>
 			<button class="btn btn-success button" id="print_image">
 				PRINT
 			</button>
-
 			<button class="btn btn-primary button" id="new_wallet">
 				GENERATE NEW WALLET
 			</button>
@@ -190,8 +203,9 @@
 		</div>
 	</div>
 
-	<div class="wallet" id="wallet">
-		<div class="col-xs-6 left">
+
+	<div class="wallet wallet-full" id="wallet">
+		<div class="col-xs-6 left" id="wallet-private">
 			<h4>PRIVATE KEY</h4>
 			<div class="qrcode" id="private-key-qr">
 				
@@ -212,7 +226,7 @@
 				</p>
 			</div>
 		</div>
-		<div class="col-xs-6 right">
+		<div class="col-xs-6 right" id="wallet-public">
 			<h4>PAYMENT ADDRESS</h4>
 			<div class="qrcode" id="public-address-qr">
 				
@@ -276,7 +290,8 @@ var _form = el('_form'),
 	_pharseConfirm = el('wallet-pharse-confirm'),
 	_pharses = el('pharses'),
 	_generate = el('generate'),
-	_validationError = el('validationError');
+	_validationError = el('validationError'),
+	_cbShowPrivateQR = el('cbShowPrivateQR');
 
 _wallet.style.display = 'none';
 _pharses.style.display = 'none';
@@ -325,6 +340,30 @@ function generateWallet(pharse) {
 	priv_qr.make();
 	el('private-key-qr').innerHTML = priv_qr.createImgTag(3);
 
+	if(!pharse)
+	{
+		showPrivateQR();
+		el('togglePrivate').style.display = 'none';
+	}
+	else{
+		_cbShowPrivateQR.checked = 0;		
+		hidePrivateQR();
+		el('togglePrivate').style.display = 'block';
+	}
+}
+
+function hidePrivateQR()
+{
+		el('wallet-private').style.display = 'none';
+		el('wallet-public').classList.replace('col-xs-6','col-xs-12');
+		el('wallet').className = 'wallet wallet-public';
+}
+
+function showPrivateQR()
+{
+		el('wallet-private').style.display = 'block';
+		el('wallet-public').classList.replace('col-xs-12','col-xs-6');
+		el('wallet').className = 'wallet wallet-full';
 }
 
 function generate() {
@@ -377,18 +416,27 @@ function render(callback){
 	_cbBrain.onclick = function () {
 		if (_cbBrain.checked) {
 			_pharses.style.display = 'block';
-			_generate.textContent = 'GENERATE BRAIN WALLET'
-			_generate.classList.replace('btn-warning','btn-info')
+			_generate.textContent = 'GENERATE BRAIN WALLET';
+			_generate.classList.replace('btn-warning','btn-info');
 		}
 		else
 		{
 			_pharses.style.display = 'none';
-			_generate.textContent = 'GENERATE RANDOM WALLET'
-			_generate.classList.replace('btn-info','btn-warning')
+			_generate.textContent = 'GENERATE RANDOM WALLET';
+			_generate.classList.replace('btn-info','btn-warning');
 		}
 	}
 
 	_generate.onclick = generate;
+
+	_cbShowPrivateQR.onclick = function () {
+		if (_cbShowPrivateQR.checked) {
+			showPrivateQR();
+		}
+		else {
+			hidePrivateQR();
+		}
+	}
 
 el('save_image').onclick = function(){
 	render(function(canvas){
