@@ -82,7 +82,7 @@
 		font-family: courier !important;
 	}
 	#generate, .button{
-		width: 200px;
+		width: 300px;
 	}
 
 	.navbar-inverse{
@@ -91,6 +91,21 @@
 		color:#eee;
 		opacity: .6;
 	}
+	
+	.move-left {
+    	width: auto;
+    	box-shadow: none;
+  	}
+
+	.cb-fix {
+		width: 20px;
+	}
+	
+	.error{
+		color: red;
+		font-weight: bold;
+	}
+
 </style>
 
 <a href="https://xdnfinance.com" style="position: fixed; top:10px; left: 10px; z-index: 100;" class="btn btn-default">
@@ -106,13 +121,13 @@
 		<img width="70" src="backgrounds/xdn.png">
 	</h1>
 	<small>
-		DIGITALNOTE PAPER WALLET GENERATOR
+		DIGITALNOTE PAPER AND BRAIN WALLET GENERATOR
 	</small>
 </div>
 
 <center>
 
-<div class="theform" id="_form">
+<div class="theform form-horizontal" id="_form">
 	<h3>WALLET DESCRIPTION<br>
 		<small>
 			(optional)
@@ -124,8 +139,22 @@
 	<input class="form-control input-lg" type="text" id="wallet-desc" placeholder="wallet purpose">
 	<small>Examples: "Donate to the Sith Church.", "My DigitalNote account for savings"</small>
 	<hr>
+
+	<div class="row">
+		<div class="col-sm-12 move-left">
+			<input class="form-control checkbox-inline checkbox-info cb-fix" type="checkbox" id="cbBrain" />
+			<small>Create brain wallet</small>
+		</div>
+	</div>
+	<div id="pharses">
+		<input class="form-control input-lg" type="password" id="wallet-pharse" placeholder="passphrase">
+		<small>This must be a minimum 5 words (or 25 characters) to call it safe</small>
+		<input class="form-control input-lg" type="password" id="wallet-pharse-confirm" placeholder="confirm passphrase">
+		<small class="error" id="validationError"></small>
+	</div>
+	<hr>
 	<button id="generate" class="btn btn-lg btn-warning">
-		GENERATE WALLET
+		GENERATE RANDOM WALLET
 	</button>
 	<br>
 	<br>
@@ -241,10 +270,16 @@
 
 function el(id){return document.getElementById(id);}
 var _form = el('_form'),
-	_wallet = el('_wallet');
+	_wallet = el('_wallet'),
+	_cbBrain = el('cbBrain'),
+	_pharse = el('wallet-pharse'),
+	_pharseConfirm = el('wallet-pharse-confirm'),
+	_pharses = el('pharses'),
+	_generate = el('generate'),
+	_validationError = el('validationError');
 
 _wallet.style.display = 'none';
-
+_pharses.style.display = 'none';
 
 function break38(line){
 	//break line fix for html2canvas
@@ -256,7 +291,7 @@ function break38(line){
 	return result;
 };
 
-function generateWallet() {
+function generateWallet(pharse) {
 	var Config = {
 	    coinUnitPlaces: 12,
 	    coinSymbol: 'XDN',
@@ -266,7 +301,14 @@ function generateWallet() {
 	};
 	var cnUtil = cnUtilGen(Config);
 
-	var seed = cnUtil.sc_reduce32(cnUtil.rand_32());
+	var seed = '';
+  	var hex = cnBase58.bintohex(cnBase58.strtobin(pharse));
+	if (pharse) {
+		seed = cnUtil.sc_reduce32(cnUtil.cn_fast_hash(hex));
+	} else {
+		seed = cnUtil.sc_reduce32(cnUtil.rand_32());
+	}
+
 	var keys = cnUtil.create_address(seed);
 	var pub, priv;
 	pub = el('public_address').value = cnUtil.pubkeys_to_string(keys.spend.pub, keys.view.pub);
@@ -285,14 +327,41 @@ function generateWallet() {
 
 }
 
+function generate() {
+	if (_cbBrain.checked) {
+		if (!validatePharse()) {
+			return;
+		}
+	}
 
-
-function generate(){
+	var pharse = _pharse.value;
+	clearPharse();
 	el('orgname').innerHTML = el('wallet-name').value || el('orgname').innerHTML;
 	el('purpose').innerHTML = el('wallet-desc').value || el('purpose').innerHTML;
-	generateWallet();
+	generateWallet(pharse);
 	_form.style.display = 'none';
 	_wallet.style.display = 'block';
+}
+
+function validatePharse() {
+	_validationError.textContent = '';
+
+	if (_pharse.value.length < 25) {
+		_validationError.textContent = 'The passphrase too short!'
+		return false;
+	}
+	if (_pharse.value != _pharseConfirm.value) {
+
+		_validationError.textContent = 'The passphrase does not match the confirm passphrase!'
+		return false;
+	}
+
+	return true;
+}
+
+function clearPharse() {
+	_pharse.value = '';
+	_pharseConfirm.value = '';
 }
 
 function render(callback){
@@ -305,7 +374,21 @@ function render(callback){
 }
 
 
-el('generate').onclick = generate;
+	_cbBrain.onclick = function () {
+		if (_cbBrain.checked) {
+			_pharses.style.display = 'block';
+			_generate.textContent = 'GENERATE BRAIN WALLET'
+			_generate.classList.replace('btn-warning','btn-info')
+		}
+		else
+		{
+			_pharses.style.display = 'none';
+			_generate.textContent = 'GENERATE RANDOM WALLET'
+			_generate.classList.replace('btn-info','btn-warning')
+		}
+	}
+
+	_generate.onclick = generate;
 
 el('save_image').onclick = function(){
 	render(function(canvas){
