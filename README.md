@@ -1,4 +1,6 @@
-## DigitalNote Paper Wallet generator
+## DigitalNote Paper/Brain Wallet generator
+
+### ABOUT THE PAPER WALLET
 
 **Paper Wallet Generator** is a tool that helps getting a DigitalNote(XDN) address. After generating a wallet you can start receiving payments without installing any software. 
 
@@ -19,6 +21,12 @@ You can access your wallet by importing private key into the DigitalNote desktop
 
 ** Don't forget to backup current wallet before importing.  
 
+### ABOUT THE BRAIN WALLET
+
+By using passphrase you can recover your wallet in the future by using same passphrase, so no need to print a qrcode.
+
+**Warning:** You should save the source to this page to make sure you can restore your wallet in the future. Chances are implementation of passphrase hashing algorithm may change overtime. 
+
 ### HOW TO USE
 1. Press 'GENERATE WALLET' button.
 2. Copy 'Private Key' and save it somewhere safe.
@@ -31,6 +39,9 @@ You can access your wallet by importing private key into the DigitalNote desktop
 
 
 ### LICENSE
+
+Copyright (c) 2017, Pawel Cioch (the brain wallet part)
+
 
 Copyright (c) 2017, Anton Alex Nesterov
 
